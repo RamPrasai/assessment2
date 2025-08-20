@@ -1,6 +1,6 @@
 # Assignment 2 - COSC360 / COSC560
 
-GitHub Repo: https://github.com/YourUsername/assessment2
+GitHub Repo: https://github.com/RamPrasai/Assignment2
 
 This project is a Laravel web application built for Assignment 2.  
 It includes authentication, an admin dashboard, and CRUD features for posts and categories.
