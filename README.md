@@ -1,6 +1,6 @@
 # Assignment 2 - COSC360 / COSC560
 
-GitHub Repo: https://github.com/RamPrasai/Assignment2
+GitHub Repo: https://github.com/RamPrasai/assessment2
 
 This project is a Laravel web application built for Assignment 2.  
 It includes authentication, an admin dashboard, and CRUD features for posts and categories.
@@ -8,24 +8,29 @@ It includes authentication, an admin dashboard, and CRUD features for posts and 
 ---
 
 ## Setup
-1. Clone the repository
-   git clone <repo-link>
-   cd assessment2
+1. Clone the repository  
+   git clone https://github.com/RamPrasai/assessment2.git  
+   cd assessment2  
 
-2. Install dependencies
-   composer install
+2. Install dependencies  
+   composer install  
 
-3. Copy and configure the environment file
-   cp .env.example .env
+3. Copy and configure the environment file  
+   cp .env.example .env  
 
-   Make sure to set the database using the required format
-   DB_DATABASE=2025_a2_cosc560_ramprasai_220291642
+   Update the database settings in .env file  
+   DB_CONNECTION=mysql  
+   DB_HOST=127.0.0.1  
+   DB_PORT=3306  
+   DB_DATABASE=2025_a2_cosc560_ramprasai_220291642  
+   DB_USERNAME=root  
+   DB_PASSWORD=  
 
-4. Generate the application key
-   php artisan key:generate
+4. Generate the application key  
+   php artisan key:generate  
 
-5. Run migrations and seeders
-   php artisan migrate:fresh --seed
+5. Run migrations and seeders  
+   php artisan migrate:fresh --seed  
 
 ---
 
@@ -50,30 +55,28 @@ http://127.0.0.1:8001
 ---
 
 ## Features
-- User authentication with login, registration, and logout
-- Admin middleware with routes under /admin
-- CRUD operations for posts and categories
-- Dropdown category selection when creating posts
-- Form validation and flash messages for feedback
-- Custom error pages for 403 and 404
-- Bootstrap 5 styling for layout and forms
+- User authentication with login, registration, and logout  
+- Admin middleware with routes under /admin  
+- CRUD operations for posts and categories  
+- Dropdown category selection when creating posts  
+- Form validation and flash messages for feedback  
+- Custom error pages for 403 and 404  
+- Bootstrap 5 styling for layout and forms  
 
 ---
 
 ## Report
 
 ### Approach
-I started by setting up the Laravel project with the provided template and installing authentication using laravel ui.  
-Then I created migrations, models, and controllers for both posts and categories.  
-I implemented full CRUD operations with views for listing, creating, editing, and deleting records.  
-Middleware was added to separate admin-only routes from normal user routes.  
-I set up validation for forms, added flash messages for feedback, and styled everything with Bootstrap.  
-Seeders were used to generate admin and user accounts and some initial data.  
-Finally, I added error pages and tested the flows to confirm the application matched the requirements.
+I began by setting up the Laravel project with the provided template and installing authentication using laravel ui.  
+I created migrations, models, and controllers for posts and categories, then implemented CRUD operations with views for listing, creating, editing, and deleting records.  
+Middleware was used to secure admin-only routes, and validation was applied to forms with flash messages for user feedback.  
+Seeders generated initial users and sample data. Bootstrap 5 was used to style forms and layouts.  
+Finally, I added error pages and tested the full flow to ensure it met the assignment requirements.  
 
 ### Challenges
-The first challenge was making sure the database followed the correct naming format required in the specification.  
-I also faced issues with route model binding and access restrictions which I solved by carefully applying middleware.  
-Validation rules and error messages required some debugging to display correctly in the views.  
-Another challenge was resetting the database during testing, which I fixed using migrate fresh with seed.  
-Overall, these issues were manageable and helped me understand Laravel more deeply.
+The first challenge was ensuring the database name followed the required format.  
+I also faced issues with middleware configuration and route model binding, which I fixed by carefully checking route definitions.  
+Validation error messages and flash messages required some debugging to show correctly in views.  
+Resetting the database during testing sometimes caused conflicts, but this was solved using migrate fresh with seeding.  
+These challenges gave me a stronger understanding of Laravel and improved my workflow.  
