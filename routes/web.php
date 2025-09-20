@@ -17,6 +17,7 @@ Route::middleware(['auth', 'admin'])->get('/admin', function () {
     return redirect()->route('admin.posts.index');
 });
 
+Route::get('/health', fn () => response()->json(['ok' => true]));
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('posts', PostController::class);
