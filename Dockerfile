@@ -18,8 +18,12 @@ COPY . .
 # Install PHP deps (no dev) & optimize
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose via PHP's built-in server
-# Render provides $PORT; bind 0.0.0.0 and serve /public
-# Start up: run migrations & caches, then launch the PHP server
-CMD sh -lc "php artisan migrate --force && php artisan storage:link || true && php artisan config:cache && php artisan route:cache && php artisan view:cache && php -S 0.0.0.0:${PORT} -t public"
+# Fix permissions for cache/storage (build-time)
+RUN chmod -R 775 storage bootstrap/cache || true
 
+# 🚀 Start: clear config, wait for DB, migrate, cache, then serve public/
+CMD sh -lc 'php artisan config:clear; \
+  until php artisan migrate --force; do echo "Waiting for DB..."; sleep 3; done; \
+  php artisan storage:link || true; \
+  php artisan config:cache; php artisan route:cache; php artisan view:cache; \
+  php -S 0.0.0.0:${PORT} -t public'
