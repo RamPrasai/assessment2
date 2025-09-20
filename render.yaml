@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: assessment2
+    env: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    # We’ll add secrets (DB URL, APP_KEY) in the dashboard after creation.
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: https://placeholder.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: LOG_CHANNEL
+        value: stack
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
