@@ -22,15 +22,5 @@ RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoload
 
 EXPOSE 8000
 
-CMD sh -lc '\
-  chmod -R 777 database storage bootstrap/cache && \
-  php artisan config:clear && php artisan route:clear && php artisan view:clear && \
-  php artisan migrate --force && php artisan db:seed --force || true && \
-  php artisan storage:link || true && \
-  php artisan config:cache && php artisan route:cache && php artisan view:cache && \
-  php artisan serve --host=0.0.0.0 --port=${PORT} \
-'
-
-'
-
-'
+# Use exec form to avoid quoting issues
+CMD ["sh","-lc","chmod -R 777 database storage bootstrap/cache && php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan migrate --force && php artisan db:seed --force || true && php artisan storage:link || true && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan serve --host=0.0.0.0 --port=${PORT}"]
