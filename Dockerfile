@@ -1,29 +1,38 @@
-# Use PHP CLI 8.2
+# Laravel + PHP 8.2 + Postgres (Render)
 FROM php:8.2-cli
 
-# System packages + PHP extensions for Laravel + Postgres
+# System deps + PHP extensions
 RUN apt-get update && apt-get install -y \
     unzip git libzip-dev libpq-dev \
- && docker-php-ext-install pdo pdo_pgsql zip
+ && docker-php-ext-install pdo mbstring pdo_pgsql zip \
+ && rm -rf /var/lib/apt/lists/*
 
-# Install Composer
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # App dir
 WORKDIR /app
-
-# Copy app files
 COPY . .
 
-# Install PHP deps (no dev) & optimize
-RUN composer install --no-dev --optimize-autoloader
+# PHP deps (prod) + permissions
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader \
+ && mkdir -p storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache || true
 
-# Fix permissions for cache/storage (build-time)
-RUN chmod -R 775 storage bootstrap/cache || true
+# (Optional) document port for local clarity (Render sets $PORT)
+EXPOSE 8000
 
-# 🚀 Start: clear config, wait for DB, migrate, cache, then serve public/
-CMD sh -lc 'php artisan config:clear; \
-  until php artisan migrate --force; do echo "Waiting for DB..."; sleep 3; done; \
-  php artisan storage:link || true; \
-  php artisan config:cache; php artisan route:cache; php artisan view:cache; \
-  php -S 0.0.0.0:${PORT} -t public'
+# Boot sequence:
+# 1) clear stale caches (so ENV from Render is read)
+# 2) wait for DB & migrate
+# 3) seed (safe to rerun), storage link
+# 4) cache config/routes/views
+# 5) start Laravel server on $PORT
+CMD sh -lc '\
+  php artisan config:clear && php artisan route:clear && php artisan view:clear && \
+  until php artisan migrate --force; do echo "⏳ Waiting for DB..."; sleep 3; done && \
+  php artisan db:seed --force || true && \
+  php artisan storage:link || true && \
+  php artisan config:cache && php artisan route:cache && php artisan view:cache && \
+  php artisan serve --host=0.0.0.0 --port=${PORT} \
+'
