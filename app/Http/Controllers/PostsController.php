@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Post;
-use Illuminate\Http\Request;
 
 class PostsController extends Controller
 {
-    
     public function index()
     {
-        $posts = Post::with('category')->latest()->paginate(5);
-        return view('posts.index', compact('posts'));
+        // If you have Blade views, return a view; JSON fallback is fine for now
+        return Post::orderBy('created_at','desc')->get();
     }
 
-    
     public function show(Post $post)
     {
-        return view('posts.show', compact('post'));
+        return $post;
     }
 }
