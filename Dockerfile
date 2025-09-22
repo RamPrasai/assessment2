@@ -1,10 +1,10 @@
-# Laravel + PHP 8.2 + SQLite (for Render)
+# Laravel + PHP 8.2 + SQLite (Render)
 FROM php:8.2-cli
 
 # System deps + PHP extensions
 RUN apt-get update && apt-get install -y \
-    unzip git libzip-dev sqlite3 libsqlite3-dev \
- && docker-php-ext-install pdo mbstring pdo_sqlite zip \
+    unzip git libzip-dev sqlite3 libsqlite3-dev libonig-dev \
+ && docker-php-ext-install pdo pdo_sqlite mbstring zip \
  && rm -rf /var/lib/apt/lists/*
 
 # Composer
@@ -22,12 +22,7 @@ RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoload
 
 EXPOSE 8000
 
-# Boot:
-# - clear caches so ENV is read
-# - migrate + seed (safe if rerun)
-# - storage link (idempotent)
-# - cache config/routes/views
-# - start Laravel on $PORT
+# Boot sequence
 CMD sh -lc '\
   php artisan config:clear && php artisan route:clear && php artisan view:clear && \
   php artisan migrate --force && php artisan db:seed --force || true && \
