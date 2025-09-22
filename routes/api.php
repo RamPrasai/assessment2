@@ -4,10 +4,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 use App\Http\Controllers\Api\PostController;
 
 // POST /api/login -> returns { token }
+Route::get('/health', function () {
+    try {
+        DB::select('select 1');
+        $tokens = Schema::hasTable('personal_access_tokens');
+        $users  = \App\Models\User::count();
+        return response()->json([
+            'ok' => true,
+            'db' => 'up',
+            'tokens_table' => $tokens,
+            'users' => $users,
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'ok' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+});
+
 Route::post('/login', function (Request $request) {
     $data = $request->validate([
         'email' => ['required','email'],
