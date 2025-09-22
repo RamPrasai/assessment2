@@ -8,16 +8,20 @@ use App\Http\Middleware\AdminMiddleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__ . '/../routes/web.php',
-        api: __DIR__ . '/../routes/api.php',   // ⬅️ load API routes
+        api: __DIR__ . '/../routes/api.php',
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Keep your custom aliases
+        // Your alias
         $middleware->alias([
             'admin' => AdminMiddleware::class,
         ]);
-        // No Sanctum SPA middleware needed for **token** auth mode
+
+        // ✅ Trust Render's reverse proxy so Laravel knows the request is HTTPS
+        $middleware->trustProxies(at: '*');
+        // (optional) You can also restrict hosts:
+        // $middleware->trustHosts(['assessment2nd.onrender.com']);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
